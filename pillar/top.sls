@@ -1,5 +1,5 @@
 base:
-  'roles:atlassian-confluence':
+  'roles:percona-server':
     - match: grain
     - users.mysql_admin
     - users.mysql_users
