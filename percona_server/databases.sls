@@ -7,6 +7,8 @@ include:
 percona_database_{{ database }}:
   mysql_database.present:
     - name: {{ database }}
+    - charset: {{ args.encoding }}
+    - collate: {{ args.collation }}
     - require:
       - service: percona_service
 {% for user in args.users %}
