@@ -13,3 +13,9 @@ include:
     - require:
       - pkg: percona_server
 {% endfor %}
+
+restart_minion_for_mysql:
+  service.running:
+    - name: salt-minion
+    - watch:
+      - file: /etc/salt/minion.d/mysql.conf

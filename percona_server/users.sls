@@ -1,8 +1,8 @@
 include:
-  - percona.server
+  - percona.databases
 
 # Check if admin user password is empty
-
+{% if salt['mysql.user_info'] is defined %}
 {% if salt['mysql.user_info'](pillar['mysql_admin']['name'], pillar['mysql_admin']['host'])['Password'] is defined %}
   {% set admin_secret = salt['mysql.user_info'](pillar['mysql_admin']['name'], pillar['mysql_admin']['host'])['Password'] %}
     {% if admin_secret == '' %}
@@ -11,7 +11,7 @@ include:
 {% else %}
   {% set admin_secret = False %}
 {% endif %}
-
+{% endif %}
 # Add MySQL users listed in mysql_users pillar
 
 {% for user, args in pillar.get('mysql_users', {}).iteritems() %}
@@ -21,9 +21,11 @@ include:
     - name: {{ user }}
     - host: {{ host }}
     - password: {{ args['password'] }}
+{% if salt['mysql.user_info'] is defined %}
 {% if admin_secret == '' %}
     - connection_user: {{ pillar['mysql_admin']['name'] }}
     - connection_pass: {{ admin_passwd }}
+{% endif %}
 {% endif %}
     - require:
       - service: percona_service
@@ -38,9 +40,11 @@ include:
   mysql_user.absent:
     - name: {{user}}
     - host: {{host}}
+{% if salt['mysql.user_info'] is defined %}
 {% if admin_secret == '' %}
     - connection_user: {{ pillar['mysql_admin']['name'] }}
     - connection_pass: {{ admin_passwd }}
+{% endif %}
 {% endif %}
     - require:
       - service: percona_service

@@ -1,5 +1,5 @@
 include:
-  - percona.config
+  - percona.server
 
 # Add databases and grants
 
